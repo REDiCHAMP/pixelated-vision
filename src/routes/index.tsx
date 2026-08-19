@@ -1,24 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SmoothScroll } from "@/components/portfolio/SmoothScroll";
+import { Cursor } from "@/components/portfolio/Cursor";
+import { Nav } from "@/components/portfolio/Nav";
+import { Hero } from "@/components/portfolio/Hero";
+import { About } from "@/components/portfolio/About";
+import { Skills } from "@/components/portfolio/Skills";
+import { Projects } from "@/components/portfolio/Projects";
+import { Journey } from "@/components/portfolio/Journey";
+import { Beyond } from "@/components/portfolio/Beyond";
+import { Contact } from "@/components/portfolio/Contact";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const title = "Zoyan Ahmed — Full Stack & 3D Web Developer";
+const description =
+  "Portfolio of Zoyan Ahmed, a Software Engineering student and full stack developer from Karachi building immersive 3D, animated web experiences with React, Three.js and the MERN stack.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <SmoothScroll>
+      <Cursor />
+      <Nav />
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Journey />
+        <Beyond />
+        <Contact />
+      </main>
+    </SmoothScroll>
   );
 }
