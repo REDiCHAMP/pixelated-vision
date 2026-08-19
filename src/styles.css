@@ -77,7 +77,7 @@
   --card-foreground: oklch(0.95 0.01 270);
   --popover: oklch(0.17 0.048 280);
   --popover-foreground: oklch(0.95 0.01 270);
-  --primary: oklch(0.53 0.23 governs);
+  --primary: oklch(0.53 0.23 280);
   --primary-foreground: oklch(0.98 0.005 270);
   --indigo-glow: oklch(0.68 0.19 285);
   --secondary: oklch(0.24 0.06 280);
@@ -164,6 +164,4 @@
   html {
     scroll-behavior: auto;
   }
-}
-
 }
