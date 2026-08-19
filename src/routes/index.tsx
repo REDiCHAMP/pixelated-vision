@@ -28,7 +28,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <SmoothScroll>
+    <>
+      <SmoothScroll />
       <Cursor />
       <Nav />
       <main>
@@ -40,6 +41,6 @@ function Index() {
         <Beyond />
         <Contact />
       </main>
-    </SmoothScroll>
+    </>
   );
 }
