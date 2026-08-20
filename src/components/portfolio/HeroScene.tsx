@@ -83,7 +83,7 @@ const fragmentShader = /* glsl */ `
   void main() {
     float fres = pow(1.0 - clamp(dot(normalize(vNormal), normalize(vView)), 0.0, 1.0), 2.4);
     vec3 base = mix(uColorA, uColorB, smoothstep(-0.4, 0.5, vDisp));
-    vec3 color = base + uGlow * fres * 1.35;
+    vec3 color = base + uGlow * fres * 0.55;
     gl_FragColor = vec4(color, 1.0);
   }
 `;
@@ -98,7 +98,7 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
       uAmp: { value: 0.5 },
       uColorA: { value: new THREE.Color("#12123a") },
       uColorB: { value: new THREE.Color("#2f2aa8") },
-      uGlow: { value: new THREE.Color("#8b93ff") },
+      uGlow: { value: new THREE.Color("#6f78f0") },
     }),
     [],
   );
@@ -116,7 +116,7 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
   });
 
   return (
-    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6}>
+    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6} position={[1.7, 0.2, 0]}>
       <mesh ref={mesh}>
         <icosahedronGeometry args={[1.5, 64]} />
         <shaderMaterial
