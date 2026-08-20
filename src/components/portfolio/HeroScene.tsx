@@ -188,12 +188,6 @@ export default function HeroScene() {
   const count = isSmall ? 500 : 1600;
   const scroll = useRef(0);
 
-  useFrame; // no-op guard for tree-shaking safety
-
-  if (typeof window !== "undefined") {
-    // updated on each rAF inside Canvas via listener below
-  }
-
   return (
     <Canvas
       dpr={[1, 1.6]}
