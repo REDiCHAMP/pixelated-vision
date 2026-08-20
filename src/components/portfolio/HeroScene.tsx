@@ -95,9 +95,9 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAmp: { value: 0.9 },
-      uColorA: { value: new THREE.Color("#1e1e5a") },
-      uColorB: { value: new THREE.Color("#4f46e5") },
+      uAmp: { value: 0.5 },
+      uColorA: { value: new THREE.Color("#12123a") },
+      uColorB: { value: new THREE.Color("#2f2aa8") },
       uGlow: { value: new THREE.Color("#8b93ff") },
     }),
     [],
@@ -111,8 +111,8 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
     m.rotation.x = THREE.MathUtils.lerp(m.rotation.x, pointer.y * 0.35, 0.05);
     m.rotation.z = THREE.MathUtils.lerp(m.rotation.z, -pointer.x * 0.25, 0.05);
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
-    m.scale.setScalar(pulse * (1 - scroll.current * 0.25));
-    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, 0.9 + scroll.current * 1.4, 0.06);
+    m.scale.setScalar(pulse * 0.78 * (1 - scroll.current * 0.25));
+    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, 0.5 + scroll.current * 1.1, 0.06);
   });
 
   return (
@@ -125,7 +125,7 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
           uniforms={uniforms}
         />
       </mesh>
-      <mesh scale={1.3}>
+      <mesh scale={1.05}>
         <icosahedronGeometry args={[1.5, 3]} />
         <meshBasicMaterial color="#818cf8" wireframe transparent opacity={0.12} />
       </mesh>
