@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SmoothScroll } from "@/components/portfolio/SmoothScroll";
 import { Cursor } from "@/components/portfolio/Cursor";
+import { Preloader } from "@/components/portfolio/Preloader";
 import { Nav } from "@/components/portfolio/Nav";
 import { Hero } from "@/components/portfolio/Hero";
 import { About } from "@/components/portfolio/About";
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -30,6 +33,7 @@ function Index() {
   return (
     <>
       <SmoothScroll />
+      <Preloader />
       <Cursor />
       <Nav />
       <main>

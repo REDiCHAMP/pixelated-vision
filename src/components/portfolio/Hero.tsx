@@ -2,6 +2,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { Suspense, lazy } from "react";
 import { profile } from "@/data/portfolio";
+import { Magnetic } from "./Magnetic";
 
 const HeroScene = lazy(() => import("./HeroScene"));
 
@@ -66,12 +67,15 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.8 }}
         >
-          <a
-            href="#work"
-            className="glow-ring rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground transition-transform duration-300 hover:scale-[1.03]"
-          >
-            View My Work
-          </a>
+          <Magnetic strength={0.4}>
+            <a
+              href="#work"
+              data-cursor-label="Explore"
+              className="glow-ring inline-block rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground transition-transform duration-300 hover:scale-[1.03]"
+            >
+              View My Work
+            </a>
+          </Magnetic>
           <span className="hidden text-xs tracking-[0.3em] text-muted-foreground uppercase sm:inline">
             Scroll ↓
           </span>

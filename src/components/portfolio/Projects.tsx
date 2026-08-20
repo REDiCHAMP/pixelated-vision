@@ -32,6 +32,7 @@ function TiltCard({ src, alt }: { src: string; alt: string }) {
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={reset}
+      data-cursor-label="Drag / Tilt"
       className="glow-ring overflow-hidden rounded-3xl border border-border transition-transform duration-500 ease-out will-change-transform"
     >
       <img src={src} alt={alt} loading="lazy" className="aspect-4/3 w-full object-cover" />
