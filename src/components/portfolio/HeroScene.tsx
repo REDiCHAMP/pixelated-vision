@@ -111,12 +111,12 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
     m.rotation.x = THREE.MathUtils.lerp(m.rotation.x, pointer.y * 0.35, 0.05);
     m.rotation.z = THREE.MathUtils.lerp(m.rotation.z, -pointer.x * 0.25, 0.05);
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
-    m.scale.setScalar(pulse * 0.78 * (1 - scroll.current * 0.25));
+    m.scale.setScalar(pulse * 0.7 * (1 - scroll.current * 0.25));
     uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, 0.5 + scroll.current * 1.1, 0.06);
   });
 
   return (
-    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6} position={[1.7, 0.2, 0]}>
+    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6} position={[2.3, 0.3, -0.6]}>
       <mesh ref={mesh}>
         <icosahedronGeometry args={[1.5, 64]} />
         <shaderMaterial
