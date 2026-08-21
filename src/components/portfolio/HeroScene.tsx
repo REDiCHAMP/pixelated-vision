@@ -116,7 +116,7 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
   });
 
   return (
-    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6} position={[2.3, 0.3, -0.6]}>
+    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.6} position={[1.9, 0.2, 0]}>
       <mesh ref={mesh}>
         <icosahedronGeometry args={[1.5, 64]} />
         <shaderMaterial
