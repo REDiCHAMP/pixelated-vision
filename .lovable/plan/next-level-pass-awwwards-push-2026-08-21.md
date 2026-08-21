@@ -5,21 +5,25 @@ Already shipped: WebGL shader hero, preloader, magnetic cursor, smooth scroll, t
 This pass adds the four things judges actually score: navigation drama, depth of storytelling, background life, and a real working contact.
 
 ## 1. Pinned horizontal Projects gallery
+
 Projects section pins to the viewport and scrolls sideways as you scroll down. Each project is a full-height panel with a parallax image, huge index number (01/02/03), and tech chips that stagger in. Progress bar at the bottom shows position in the gallery.
 
 ## 2. Project case-study overlay
+
 Clicking a project expands its card into a full-screen case study (shared-element transition — the image grows into place). Inside: problem, approach, the 360° viewer callout, feature grid, tech list, and live/repo buttons. Escape or a magnetic close button reverses the transition. Body scroll locks while open.
 
 ## 3. 3D skill orbit
+
 Replaces the flat tab chips with a rotating sphere of tech labels in WebGL — drag to spin, hover a label to highlight and dim the rest, click to filter which projects used it. Category tabs stay as a fallback list under it, and reduced-motion / no-WebGL users get the current tab UI.
 
 ## 4. Living background + section transitions
+
 A subtle animated gradient-mesh shader behind the whole page whose hue shifts per section (indigo → violet → deep blue) as you scroll, plus a grain overlay. Section headings get a text-scramble reveal, and a thin scroll-progress rail runs down the right edge with section dots.
 
-## 5. Working contact form
-Lovable Cloud backend: name, email, message stored in a `contact_messages` table, with validation, submit states, success animation, and honeypot spam protection. Your email stays visible as a direct alternative.
+## 5. Display all projects I told to you about them on first keep Elite Legal and then Pulse Then Gamerz Hub Then Jewelry and so on.
 
 ## 6. Polish layer
+
 - Infinite marquee strip of skills between sections
 - Nav that hides on scroll-down, reveals on scroll-up, with an active-section indicator that slides
 - Page-level "view source / GitHub" magnetic footer link
