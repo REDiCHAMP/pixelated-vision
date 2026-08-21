@@ -48,17 +48,38 @@ export const skillGroups = [
   {
     id: "motion",
     label: "3D & Animation",
-    items: ["Three.js", "GSAP", "Lenis", "Framer Motion", "Scroll Animations"],
+    items: [
+      "Three.js",
+      "GSAP",
+      "Lenis",
+      "CSS Animations",
+      "Interactive 3D",
+      "360° Visualization",
+    ],
+  },
+  {
+    id: "programming",
+    label: "Programming",
+    items: ["C", "C++", "C#", "JavaScript", "Java"],
   },
   {
     id: "tools",
-    label: "Tools & Languages",
-    items: ["Git & GitHub", "APIs / JSON", "C / C++", "Flutter / Dart", "AI Fundamentals"],
+    label: "Tools",
+    items: [
+      "Git",
+      "GitHub",
+      "Visual Studio",
+      "VS Code",
+      "SSMS",
+      "MySQL Workbench",
+      "Figma",
+    ],
   },
 ] as const;
 
 export type Project = {
   id: string;
+  index: string;
   title: string;
   subtitle: string;
   description: string;
@@ -66,15 +87,41 @@ export type Project = {
   features: string[];
   highlight?: string;
   featured?: boolean;
+  problem: string;
+  approach: string;
 };
 
 export const projects: Project[] = [
   {
-    id: "jewelry",
-    title: "Jewelry Website",
-    subtitle: "3D Luxury Jewelry E-Commerce Experience",
+    id: "elite-legal",
+    index: "01",
+    title: "Elite Legal",
+    subtitle: "Online Law Firm Booking Platform",
     description:
-      "A premium jewelry e-commerce experience focused on immersive product presentation, interactive animations and 3D product visualization.",
+      "A modern online law firm platform that lets users explore legal services and lawyers while providing a complete appointment booking experience.",
+    stack: ["HTML", "CSS", "JavaScript", "PHP", "MySQL", "Bootstrap", "Three.js", "GSAP", "Lenis"],
+    features: [
+      "Lawyer profiles",
+      "Appointment booking",
+      "Legal service presentation",
+      "Responsive design",
+      "Interactive UI",
+      "Smooth scroll animations",
+      "Modern visual effects",
+      "Database integration",
+    ],
+    problem:
+      "Law firms usually publish static brochure sites — clients still have to call to book. The challenge was making legal services feel approachable online while handling real appointment data.",
+    approach:
+      "A PHP + MySQL backend stores lawyers, services and bookings, while the front end leans on GSAP and Lenis for a calm, premium scroll rhythm that suits a professional brand.",
+  },
+  {
+    id: "pulse",
+    index: "02",
+    title: "Pulse",
+    subtitle: "Fitness Tracking Web Application",
+    description:
+      "A fitness web application concept that helps users monitor workouts, nutrition, meals and daily activity from a single animated dashboard.",
     stack: [
       "React",
       "Node.js",
@@ -85,24 +132,28 @@ export const projects: Project[] = [
       "GSAP",
       "Lenis",
     ],
-    highlight:
-      "360° Interactive Jewelry Viewer — users can rotate a 3D jewelry model and inspect the product from any angle.",
     features: [
-      "Product showcase",
-      "E-commerce interface",
-      "3D product visualization",
-      "360° interaction",
-      "Scroll-driven animations",
-      "Premium luxury UI",
+      "Workout tracking",
+      "Nutrition tracking",
+      "Meal tracking",
+      "Step tracking",
+      "Fitness dashboard",
+      "Interactive UI",
+      "Responsive design",
+      "Animated data presentation",
     ],
-    featured: true,
+    problem:
+      "Fitness dashboards get dense fast. The goal was to show workouts, nutrition and steps together without the screen turning into a spreadsheet.",
+    approach:
+      "A MERN stack with a component-driven dashboard: animated rings and progress reveals give each metric its own visual weight, so scanning the day takes a second, not a minute.",
   },
   {
-    id: "gaming",
-    title: "Gaming Accessories Store",
+    id: "gamerz-hub",
+    index: "03",
+    title: "Gamerz Hub",
     subtitle: "Gaming Accessories E-Commerce Platform",
     description:
-      "A modern e-commerce platform concept focused on gaming accessories, combining product discovery, interactive UI and a visually engaging shopping experience.",
+      "A modern e-commerce platform focused on gaming accessories, combining product discovery, interactive UI and a visually engaging shopping experience.",
     stack: [
       "React",
       "Node.js",
@@ -116,11 +167,73 @@ export const projects: Project[] = [
     features: [
       "Product catalog",
       "Product details",
+      "Shopping experience",
       "Categories",
       "Responsive design",
       "Interactive animations",
       "Modern gaming-inspired UI",
     ],
+    problem:
+      "Gaming stores compete on energy. A plain grid of products reads as generic and loses the audience immediately.",
+    approach:
+      "Neon-lit product cards, category-driven discovery and motion on every interaction — built on a MERN backend so the catalog and product detail pages stay data-driven.",
+  },
+  {
+    id: "jewelry",
+    index: "04",
+    title: "Jewelry Website",
+    subtitle: "3D Luxury Jewelry E-Commerce Experience",
+    description:
+      "A premium jewelry e-commerce experience focused on immersive product presentation, interactive animations and true 3D product visualization.",
+    stack: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Tailwind CSS",
+      "Three.js",
+      "GSAP",
+      "Lenis",
+    ],
+    highlight:
+      "360° Interactive Jewelry Viewer — users rotate a real 3D model and inspect the piece from any angle before buying.",
+    features: [
+      "Product showcase",
+      "E-commerce interface",
+      "3D product visualization",
+      "360° interaction",
+      "Smooth transitions",
+      "Scroll-driven animations",
+      "Responsive design",
+      "Premium luxury UI",
+    ],
+    featured: true,
+    problem:
+      "Jewelry sells on detail, and flat photography can't communicate cut, shine or scale. Shoppers hesitate when they can't inspect the piece.",
+    approach:
+      "A Three.js 360° viewer sits at the centre of the product page, wrapped in a restrained luxury layout with scroll-driven reveals so the product — not the interface — carries the drama.",
+  },
+  {
+    id: "greenway",
+    index: "05",
+    title: "Greenway School",
+    subtitle: "Modern School Website",
+    description:
+      "An educational website presenting a school's programs, facilities and information through a responsive, interactive interface.",
+    stack: ["React", "Tailwind CSS", "Bootstrap", "JavaScript", "Three.js", "GSAP", "Lenis"],
+    features: [
+      "Responsive school website",
+      "Modern landing page",
+      "Programs and facilities sections",
+      "Interactive navigation",
+      "Smooth scrolling",
+      "Animated content reveals",
+      "Responsive mobile experience",
+    ],
+    problem:
+      "School sites are usually information dumps that parents have to dig through on a phone.",
+    approach:
+      "Clear program and facility sections, an interactive nav and animated reveals that guide a parent through admissions info in the order they actually need it.",
   },
 ];
 
@@ -192,6 +305,23 @@ export const interests = [
   "Gaming",
   "Learning AI & Emerging Tech",
   "Problem Solving",
+];
+
+export const marqueeItems = [
+  "React",
+  "Three.js",
+  "Node.js",
+  "MongoDB",
+  "Tailwind CSS",
+  "GSAP",
+  "Express.js",
+  "MySQL",
+  "PHP",
+  "C#",
+  "ASP.NET MVC",
+  "Lenis",
+  "Firebase",
+  "Git",
 ];
 
 export const navLinks = [
