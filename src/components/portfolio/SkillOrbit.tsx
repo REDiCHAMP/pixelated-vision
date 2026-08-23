@@ -64,7 +64,7 @@ function Sphere({ onHover }: { onHover: (v: string | null) => void }) {
 
 export default function SkillOrbit({ onHover }: { onHover: (v: string | null) => void }) {
   return (
-    <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 7.4], fov: 45 }} gl={{ alpha: true }}>
+    <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 10.5], fov: 45 }} gl={{ alpha: true }}>
       <Sphere onHover={onHover} />
     </Canvas>
   );
