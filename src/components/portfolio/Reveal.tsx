@@ -1,5 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
+import { Scramble } from "./Scramble";
+
 
 export function Reveal({
   children,
@@ -39,8 +41,9 @@ export function SectionHeading({
   return (
     <Reveal className="mb-12 max-w-2xl md:mb-16">
       <span className="font-display text-xs tracking-[0.35em] text-muted-foreground uppercase">
-        {index}
+        <Scramble text={index} />
       </span>
+
       <h2 className="mt-4 text-4xl font-semibold text-balance md:text-5xl">{title}</h2>
       {lead ? <p className="mt-4 text-base leading-relaxed text-muted-foreground">{lead}</p> : null}
     </Reveal>
