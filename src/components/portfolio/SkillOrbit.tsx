@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { skillGroups } from "@/data/portfolio";
 
-const labels = skillGroups.flatMap((g) => g.items.map((item) => item as string));
+const labels = [...new Set(skillGroups.flatMap((g) => g.items.map((item) => item as string)))];
 
 function Sphere({ onHover }: { onHover: (v: string | null) => void }) {
   const group = useRef<THREE.Group>(null);
