@@ -17,10 +17,10 @@ const images: Record<string, string> = {
 };
 
 function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
 
-  const onMove = (e: PointerEvent<HTMLDivElement>) => {
+  const onMove = (e: PointerEvent<HTMLButtonElement>) => {
     const el = ref.current;
     if (!el || reduce) return;
     const r = el.getBoundingClientRect();
@@ -36,7 +36,7 @@ function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
   return (
     <article className="flex w-[86vw] shrink-0 flex-col gap-6 md:w-[62vw] lg:w-[46vw]">
       <button
-        ref={ref as never}
+        ref={ref}
         type="button"
         onClick={onOpen}
         onPointerMove={onMove}
