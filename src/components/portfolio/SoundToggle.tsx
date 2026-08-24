@@ -7,7 +7,10 @@ export function SoundToggle({ className = "" }: { className?: string }) {
   useEffect(() => {
     initSound();
     setMutedState(isMuted());
-    return subscribeSound(setMutedState);
+    const unsub = subscribeSound(setMutedState);
+    return () => {
+      unsub();
+    };
   }, []);
 
   useEffect(() => {
