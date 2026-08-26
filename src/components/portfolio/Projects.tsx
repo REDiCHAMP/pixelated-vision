@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { Suspense, lazy, useEffect, useRef, useState, type PointerEvent } from "react";
+import { ClientOnly } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { projects, type Project } from "@/data/portfolio";
 import { SectionHeading } from "./Reveal";
+import { DevicePreview } from "./DevicePreview";
+import { sfx } from "@/lib/sound";
 import eliteImg from "@/assets/project-elitelegal.jpg";
 import pulseImg from "@/assets/project-pulse.jpg";
 import gamingImg from "@/assets/project-gaming.jpg";
 import jewelryImg from "@/assets/project-jewelry.jpg";
 import greenwayImg from "@/assets/project-greenway.jpg";
+
+const JewelryViewer = lazy(() => import("./JewelryViewer"));
 
 const images: Record<string, string> = {
   "elite-legal": eliteImg,
