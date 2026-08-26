@@ -76,6 +76,7 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uColorA;
   uniform vec3 uColorB;
   uniform vec3 uGlow;
+  uniform float uFade;
   varying vec3 vNormal;
   varying vec3 vView;
   varying float vDisp;
@@ -84,18 +85,24 @@ const fragmentShader = /* glsl */ `
     float fres = pow(1.0 - clamp(dot(normalize(vNormal), normalize(vView)), 0.0, 1.0), 2.4);
     vec3 base = mix(uColorA, uColorB, smoothstep(-0.4, 0.5, vDisp));
     vec3 color = base + uGlow * fres * 0.55;
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, uFade);
   }
 `;
 
+// Stage 1 (scroll 0 → 0.45): noisy crystal calms into a smooth globe.
+// Stage 2 (scroll 0.45 → 1): solid shell fades out, wireframe globe takes over,
+// then the shell dissolves into the dispersing particle field.
 function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
   const mesh = useRef<THREE.Mesh>(null);
+  const wire = useRef<THREE.Mesh>(null);
+  const wireMat = useRef<THREE.MeshBasicMaterial>(null);
   const { pointer } = useThree();
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uAmp: { value: 0.5 },
+      uFade: { value: 1 },
       uColorA: { value: new THREE.Color("#12123a") },
       uColorB: { value: new THREE.Color("#2f2aa8") },
       uGlow: { value: new THREE.Color("#6f78f0") },
@@ -105,14 +112,31 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
 
   useFrame((state, delta) => {
     const m = mesh.current;
+    const s = scroll.current;
     uniforms.uTime.value += delta;
+
+    // crystal → globe
+    const targetAmp = THREE.MathUtils.lerp(0.55, 0.04, THREE.MathUtils.clamp(s / 0.45, 0, 1));
+    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, targetAmp, 0.07);
+    // globe → dispersal
+    const dissolve = THREE.MathUtils.smoothstep(s, 0.5, 0.92);
+    uniforms.uFade.value = THREE.MathUtils.lerp(uniforms.uFade.value, 1 - dissolve, 0.08);
+
+    if (wireMat.current) {
+      const wireIn = THREE.MathUtils.smoothstep(s, 0.18, 0.55) * (1 - dissolve);
+      wireMat.current.opacity = 0.12 + wireIn * 0.5;
+    }
+    if (wire.current) {
+      wire.current.rotation.y -= delta * 0.1;
+      wire.current.scale.setScalar(1.05 + dissolve * 0.5);
+    }
+
     if (!m) return;
     m.rotation.y += delta * 0.14;
     m.rotation.x = THREE.MathUtils.lerp(m.rotation.x, pointer.y * 0.35, 0.05);
     m.rotation.z = THREE.MathUtils.lerp(m.rotation.z, -pointer.x * 0.25, 0.05);
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
-    m.scale.setScalar(pulse * 0.7 * (1 - scroll.current * 0.25));
-    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, 0.5 + scroll.current * 1.1, 0.06);
+    m.scale.setScalar(pulse * 0.7 * (1 - s * 0.2));
   });
 
   return (
@@ -120,14 +144,15 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
       <mesh ref={mesh}>
         <icosahedronGeometry args={[1.5, 64]} />
         <shaderMaterial
+          transparent
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
           uniforms={uniforms}
         />
       </mesh>
-      <mesh scale={1.05}>
+      <mesh ref={wire} scale={1.05}>
         <icosahedronGeometry args={[1.5, 3]} />
-        <meshBasicMaterial color="#818cf8" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial ref={wireMat} color="#818cf8" wireframe transparent opacity={0.12} />
       </mesh>
     </Float>
   );
