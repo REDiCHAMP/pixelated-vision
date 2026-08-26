@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 const vertexShader = /* glsl */ `
@@ -76,6 +76,7 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uColorA;
   uniform vec3 uColorB;
   uniform vec3 uGlow;
+  uniform float uFade;
   varying vec3 vNormal;
   varying vec3 vView;
   varying float vDisp;
@@ -84,18 +85,24 @@ const fragmentShader = /* glsl */ `
     float fres = pow(1.0 - clamp(dot(normalize(vNormal), normalize(vView)), 0.0, 1.0), 2.4);
     vec3 base = mix(uColorA, uColorB, smoothstep(-0.4, 0.5, vDisp));
     vec3 color = base + uGlow * fres * 0.55;
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(color, uFade);
   }
 `;
 
+// Stage 1 (scroll 0 → 0.45): noisy crystal calms into a smooth globe.
+// Stage 2 (scroll 0.45 → 1): solid shell fades out, wireframe globe takes over,
+// then the shell dissolves into the dispersing particle field.
 function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
   const mesh = useRef<THREE.Mesh>(null);
+  const wire = useRef<THREE.Mesh>(null);
+  const wireMat = useRef<THREE.MeshBasicMaterial>(null);
   const { pointer } = useThree();
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uAmp: { value: 0.5 },
+      uFade: { value: 1 },
       uColorA: { value: new THREE.Color("#12123a") },
       uColorB: { value: new THREE.Color("#2f2aa8") },
       uGlow: { value: new THREE.Color("#6f78f0") },
@@ -105,14 +112,31 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
 
   useFrame((state, delta) => {
     const m = mesh.current;
+    const s = scroll.current;
     uniforms.uTime.value += delta;
+
+    // crystal → globe
+    const targetAmp = THREE.MathUtils.lerp(0.55, 0.04, THREE.MathUtils.clamp(s / 0.45, 0, 1));
+    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, targetAmp, 0.07);
+    // globe → dispersal
+    const dissolve = THREE.MathUtils.smoothstep(s, 0.5, 0.92);
+    uniforms.uFade.value = THREE.MathUtils.lerp(uniforms.uFade.value, 1 - dissolve, 0.08);
+
+    if (wireMat.current) {
+      const wireIn = THREE.MathUtils.smoothstep(s, 0.18, 0.55) * (1 - dissolve);
+      wireMat.current.opacity = 0.12 + wireIn * 0.5;
+    }
+    if (wire.current) {
+      wire.current.rotation.y -= delta * 0.1;
+      wire.current.scale.setScalar(1.05 + dissolve * 0.5);
+    }
+
     if (!m) return;
     m.rotation.y += delta * 0.14;
     m.rotation.x = THREE.MathUtils.lerp(m.rotation.x, pointer.y * 0.35, 0.05);
     m.rotation.z = THREE.MathUtils.lerp(m.rotation.z, -pointer.x * 0.25, 0.05);
     const pulse = 1 + Math.sin(state.clock.elapsedTime * 0.6) * 0.03;
-    m.scale.setScalar(pulse * 0.7 * (1 - scroll.current * 0.25));
-    uniforms.uAmp.value = THREE.MathUtils.lerp(uniforms.uAmp.value, 0.5 + scroll.current * 1.1, 0.06);
+    m.scale.setScalar(pulse * 0.7 * (1 - s * 0.2));
   });
 
   return (
@@ -120,14 +144,15 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
       <mesh ref={mesh}>
         <icosahedronGeometry args={[1.5, 64]} />
         <shaderMaterial
+          transparent
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
           uniforms={uniforms}
         />
       </mesh>
-      <mesh scale={1.05}>
+      <mesh ref={wire} scale={1.05}>
         <icosahedronGeometry args={[1.5, 3]} />
-        <meshBasicMaterial color="#818cf8" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial ref={wireMat} color="#818cf8" wireframe transparent opacity={0.12} />
       </mesh>
     </Float>
   );
@@ -154,6 +179,7 @@ function Particles({ count, scroll }: { count: number; scroll: React.RefObject<n
     if (!p) return;
     p.rotation.y += delta * 0.03;
     p.rotation.x = THREE.MathUtils.lerp(p.rotation.x, scroll.current * 0.4, 0.05);
+    p.scale.setScalar(THREE.MathUtils.lerp(p.scale.x, 1 + scroll.current * 0.4, 0.05));
   });
 
   return (
@@ -173,6 +199,55 @@ function Particles({ count, scroll }: { count: number; scroll: React.RefObject<n
   );
 }
 
+/** Shell of points sitting on the crystal that bursts outward as it dissolves. */
+function Dispersal({ count, scroll }: { count: number; scroll: React.RefObject<number> }) {
+  const points = useRef<THREE.Points>(null);
+  const mat = useRef<THREE.PointsMaterial>(null);
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 1.5 + Math.random() * 0.12;
+      arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      arr[i * 3 + 2] = r * Math.cos(phi);
+    }
+    return arr;
+  }, [count]);
+
+  useFrame((_, delta) => {
+    const p = points.current;
+    const s = scroll.current;
+    const burst = THREE.MathUtils.smoothstep(s, 0.45, 1);
+    if (mat.current) {
+      mat.current.opacity = burst * (1 - burst * 0.55) * 1.6;
+      mat.current.size = 0.03 + burst * 0.02;
+    }
+    if (!p) return;
+    p.rotation.y += delta * 0.22;
+    p.scale.setScalar(0.7 * (1 + burst * 2.6));
+  });
+
+  return (
+    <points ref={points} position={[1.9, 0.2, 0]}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        ref={mat}
+        size={0.03}
+        color="#c7d2fe"
+        transparent
+        opacity={0}
+        sizeAttenuation
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
 function ScrollRig({ scroll }: { scroll: React.RefObject<number> }) {
   useFrame(({ camera }) => {
     const target = 5.2 + scroll.current * 3.2;
@@ -185,21 +260,23 @@ function ScrollRig({ scroll }: { scroll: React.RefObject<number> }) {
 
 export default function HeroScene() {
   const isSmall = typeof window !== "undefined" && window.innerWidth < 768;
-  const count = isSmall ? 500 : 1600;
+  const count = isSmall ? 450 : 1600;
   const scroll = useRef(0);
+
+  useEffect(() => {
+    const update = () => {
+      scroll.current = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
 
   return (
     <Canvas
-      dpr={[1, 1.6]}
+      dpr={isSmall ? [1, 1.25] : [1, 1.6]}
       camera={{ position: [0, 0, 5.2], fov: 45 }}
-      gl={{ antialias: true, alpha: true }}
-      onCreated={() => {
-        const update = () => {
-          scroll.current = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
-        };
-        update();
-        window.addEventListener("scroll", update, { passive: true });
-      }}
+      gl={{ antialias: !isSmall, alpha: true, powerPreference: "high-performance" }}
     >
       <ambientLight intensity={0.4} />
       <directionalLight position={[4, 5, 3]} intensity={2.2} color="#818cf8" />
@@ -207,6 +284,7 @@ export default function HeroScene() {
       <ScrollRig scroll={scroll} />
       <Crystal scroll={scroll} />
       <Particles count={count} scroll={scroll} />
+      <Dispersal count={isSmall ? 300 : 900} scroll={scroll} />
     </Canvas>
   );
 }

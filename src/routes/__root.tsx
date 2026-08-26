@@ -14,19 +14,45 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+    <div className="noise-grain relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,color-mix(in_oklab,var(--primary)_35%,transparent),transparent_65%)]" />
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        {Array.from({ length: 60 }).map((_, i) => (
+          <span
+            key={i}
+            className="absolute size-[2px] rounded-full bg-indigo-glow/70"
+            style={{
+              left: `${(i * 37) % 100}%`,
+              top: `${(i * 61) % 100}%`,
+              opacity: 0.2 + ((i % 5) * 0.15),
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative max-w-lg text-center">
+        <div className="mx-auto mb-10 size-40 animate-[blob-drift_18s_ease-in-out_infinite] rounded-[38%] border border-primary/40 bg-[radial-gradient(circle_at_35%_30%,color-mix(in_oklab,var(--indigo-glow)_45%,transparent),transparent_70%)]" />
+        <h1 className="font-display text-7xl font-semibold tracking-tight md:text-8xl">
+          <span className="text-gradient">404</span>
+        </h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Lost in space</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          This page drifted out of orbit. Press{" "}
+          <kbd className="rounded border border-border px-1.5 py-0.5 text-xs">~</kbd> anywhere on
+          the site to open the terminal — or head back to solid ground.
         </p>
-        <div className="mt-6">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="glow-ring inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-xs tracking-[0.2em] text-primary-foreground uppercase"
           >
             Go home
+          </Link>
+          <Link
+            to="/resume"
+            className="inline-flex items-center justify-center rounded-full border border-border px-6 py-3 text-xs tracking-[0.2em] uppercase transition-colors hover:bg-surface-elevated"
+          >
+            View resume
           </Link>
         </div>
       </div>

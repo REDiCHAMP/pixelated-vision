@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { Suspense, lazy, useEffect, useRef, useState, type PointerEvent } from "react";
+import { ClientOnly } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { projects, type Project } from "@/data/portfolio";
 import { SectionHeading } from "./Reveal";
+import { DevicePreview } from "./DevicePreview";
+import { sfx } from "@/lib/sound";
 import eliteImg from "@/assets/project-elitelegal.jpg";
 import pulseImg from "@/assets/project-pulse.jpg";
 import gamingImg from "@/assets/project-gaming.jpg";
 import jewelryImg from "@/assets/project-jewelry.jpg";
 import greenwayImg from "@/assets/project-greenway.jpg";
+
+const JewelryViewer = lazy(() => import("./JewelryViewer"));
 
 const images: Record<string, string> = {
   "elite-legal": eliteImg,
@@ -87,21 +92,47 @@ function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
 }
 
 function CaseStudy({ project, onClose }: { project: Project; onClose: () => void }) {
+  const panel = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      // Keep focus inside the dialog.
+      if (e.key === "Tab" && panel.current) {
+        const items = panel.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+        );
+        if (items.length === 0) return;
+        const first = items[0]!;
+        const last = items[items.length - 1]!;
+        if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      }
     };
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
+    const opener = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+    closeBtn.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      opener?.focus?.();
     };
   }, [onClose]);
 
   return (
     <motion.div
+      ref={panel}
       className="fixed inset-0 z-[70] overflow-y-auto bg-background/95 backdrop-blur-xl"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -120,8 +151,12 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
             <p className="font-display mt-2 text-indigo-glow">{project.subtitle}</p>
           </div>
           <button
+            ref={closeBtn}
             type="button"
-            onClick={onClose}
+            onClick={() => {
+              sfx.close();
+              onClose();
+            }}
             data-cursor-label="Close"
             className="shrink-0 rounded-full border border-border px-5 py-3 text-xs tracking-[0.2em] uppercase transition-colors hover:bg-surface-elevated"
           >
@@ -129,19 +164,42 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
           </button>
         </div>
 
-        <motion.img
+        <DevicePreview
+          image={images[project.id] ?? ""}
+          title={project.title}
           layoutId={`project-image-${project.id}`}
-          src={images[project.id] ?? ""}
-          alt={`${project.title} preview`}
-          width={1280}
-          height={960}
-          className="glow-ring aspect-16/10 w-full rounded-3xl border border-border object-cover"
+          liveUrl={project.liveUrl}
         />
 
         {project.highlight ? (
           <p className="mt-10 rounded-2xl border border-primary/40 bg-surface p-6 leading-relaxed">
             ⭐ {project.highlight}
           </p>
+        ) : null}
+
+        {project.viewer === "jewelry" ? (
+          <div className="mt-10">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h3 className="font-display text-xs tracking-[0.3em] text-muted-foreground uppercase">
+                Live 360° viewer
+              </h3>
+              <span className="text-xs text-muted-foreground">Drag to rotate</span>
+            </div>
+            <div
+              data-cursor-label="Drag"
+              className="glow-ring h-[22rem] overflow-hidden rounded-3xl border border-primary/40 bg-[radial-gradient(circle_at_50%_60%,color-mix(in_oklab,var(--primary)_28%,transparent),transparent_65%)] sm:h-[26rem]"
+            >
+              <ClientOnly fallback={null}>
+                <Suspense fallback={null}>
+                  <JewelryViewer />
+                </Suspense>
+              </ClientOnly>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              The same Three.js technique used in the production jewelry build — a real 3D ring you
+              can inspect from any angle.
+            </p>
+          </div>
         ) : null}
 
         <div className="mt-12 grid gap-10 md:grid-cols-2">
