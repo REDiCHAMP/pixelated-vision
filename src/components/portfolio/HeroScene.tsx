@@ -179,6 +179,7 @@ function Particles({ count, scroll }: { count: number; scroll: React.RefObject<n
     if (!p) return;
     p.rotation.y += delta * 0.03;
     p.rotation.x = THREE.MathUtils.lerp(p.rotation.x, scroll.current * 0.4, 0.05);
+    p.scale.setScalar(THREE.MathUtils.lerp(p.scale.x, 1 + scroll.current * 0.4, 0.05));
   });
 
   return (
@@ -198,6 +199,55 @@ function Particles({ count, scroll }: { count: number; scroll: React.RefObject<n
   );
 }
 
+/** Shell of points sitting on the crystal that bursts outward as it dissolves. */
+function Dispersal({ count, scroll }: { count: number; scroll: React.RefObject<number> }) {
+  const points = useRef<THREE.Points>(null);
+  const mat = useRef<THREE.PointsMaterial>(null);
+
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 1.5 + Math.random() * 0.12;
+      arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      arr[i * 3 + 2] = r * Math.cos(phi);
+    }
+    return arr;
+  }, [count]);
+
+  useFrame((_, delta) => {
+    const p = points.current;
+    const s = scroll.current;
+    const burst = THREE.MathUtils.smoothstep(s, 0.45, 1);
+    if (mat.current) {
+      mat.current.opacity = burst * (1 - burst * 0.55) * 1.6;
+      mat.current.size = 0.03 + burst * 0.02;
+    }
+    if (!p) return;
+    p.rotation.y += delta * 0.22;
+    p.scale.setScalar(0.7 * (1 + burst * 2.6));
+  });
+
+  return (
+    <points ref={points} position={[1.9, 0.2, 0]}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        ref={mat}
+        size={0.03}
+        color="#c7d2fe"
+        transparent
+        opacity={0}
+        sizeAttenuation
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
 function ScrollRig({ scroll }: { scroll: React.RefObject<number> }) {
   useFrame(({ camera }) => {
     const target = 5.2 + scroll.current * 3.2;
@@ -210,21 +260,23 @@ function ScrollRig({ scroll }: { scroll: React.RefObject<number> }) {
 
 export default function HeroScene() {
   const isSmall = typeof window !== "undefined" && window.innerWidth < 768;
-  const count = isSmall ? 500 : 1600;
+  const count = isSmall ? 450 : 1600;
   const scroll = useRef(0);
+
+  useEffect(() => {
+    const update = () => {
+      scroll.current = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
 
   return (
     <Canvas
-      dpr={[1, 1.6]}
+      dpr={isSmall ? [1, 1.25] : [1, 1.6]}
       camera={{ position: [0, 0, 5.2], fov: 45 }}
-      gl={{ antialias: true, alpha: true }}
-      onCreated={() => {
-        const update = () => {
-          scroll.current = Math.min(1, window.scrollY / Math.max(1, window.innerHeight));
-        };
-        update();
-        window.addEventListener("scroll", update, { passive: true });
-      }}
+      gl={{ antialias: !isSmall, alpha: true, powerPreference: "high-performance" }}
     >
       <ambientLight intensity={0.4} />
       <directionalLight position={[4, 5, 3]} intensity={2.2} color="#818cf8" />
@@ -232,6 +284,7 @@ export default function HeroScene() {
       <ScrollRig scroll={scroll} />
       <Crystal scroll={scroll} />
       <Particles count={count} scroll={scroll} />
+      <Dispersal count={isSmall ? 300 : 900} scroll={scroll} />
     </Canvas>
   );
 }
