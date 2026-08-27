@@ -89,6 +89,10 @@ export type Project = {
   featured?: boolean;
   problem: string;
   approach: string;
+  /** Deployed URL — when set, the case study embeds a live iframe preview. */
+  liveUrl?: string;
+  /** Interactive 3D demo embedded in the case study. */
+  viewer?: "jewelry";
 };
 
 export const projects: Project[] = [
