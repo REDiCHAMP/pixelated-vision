@@ -168,7 +168,7 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
           image={images[project.id] ?? ""}
           title={project.title}
           layoutId={`project-image-${project.id}`}
-          liveUrl={project.liveUrl}
+          {...(project.liveUrl ? { liveUrl: project.liveUrl } : {})}
         />
 
         {project.highlight ? (
