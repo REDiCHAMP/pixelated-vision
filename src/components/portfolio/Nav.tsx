@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { navLinks, profile } from "@/data/portfolio";
+import { SoundToggle } from "./SoundToggle";
+import { Magnetic } from "./Magnetic";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
