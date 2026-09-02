@@ -2,7 +2,9 @@ import { ClientOnly } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
+import { useAppReady } from "@/hooks/use-app-ready";
 import { Magnetic } from "./Magnetic";
+
 
 const HeroScene = lazy(() => import("./HeroScene"));
 
