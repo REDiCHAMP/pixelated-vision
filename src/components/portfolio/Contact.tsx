@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import { profile } from "@/data/portfolio";
 import { Reveal } from "./Reveal";
+import { Magnetic } from "./Magnetic";
 
 export function Contact() {
   return (
