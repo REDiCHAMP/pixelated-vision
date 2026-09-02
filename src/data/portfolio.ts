@@ -212,6 +212,7 @@ export const projects: Project[] = [
       "Premium luxury UI",
     ],
     featured: true,
+    viewer: "jewelry",
     problem:
       "Jewelry sells on detail, and flat photography can't communicate cut, shine or scale. Shoppers hesitate when they can't inspect the piece.",
     approach:

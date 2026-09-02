@@ -13,6 +13,7 @@ import { Projects } from "@/components/portfolio/Projects";
 import { Journey } from "@/components/portfolio/Journey";
 import { Beyond } from "@/components/portfolio/Beyond";
 import { Contact } from "@/components/portfolio/Contact";
+import { Terminal } from "@/components/portfolio/Terminal";
 
 const title = "Zoyan Ahmed — Full Stack & 3D Web Developer";
 const description =
@@ -35,13 +36,19 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[300] focus:rounded-full focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:text-primary-foreground"
+      >
+        Skip to content
+      </a>
       <SmoothScroll />
       <Preloader />
       <Cursor />
       <Background />
       <ScrollRail />
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
         <About />
         <Marquee />
@@ -51,6 +58,7 @@ function Index() {
         <Beyond />
         <Contact />
       </main>
+      <Terminal />
     </>
   );
 }

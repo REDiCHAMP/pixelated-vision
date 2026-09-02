@@ -168,7 +168,7 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
           image={images[project.id] ?? ""}
           title={project.title}
           layoutId={`project-image-${project.id}`}
-          liveUrl={project.liveUrl}
+          {...(project.liveUrl ? { liveUrl: project.liveUrl } : {})}
         />
 
         {project.highlight ? (
@@ -251,6 +251,11 @@ export function Projects() {
   const [open, setOpen] = useState<Project | null>(null);
   const reduce = useReducedMotion();
 
+  const openProject = (p: Project) => {
+    sfx.whoosh();
+    setOpen(p);
+  };
+
   const { scrollYProgress } = useScroll({ target: trackRef });
   const x = useTransform(scrollYProgress, [0, 1], ["2%", "-72%"]);
   const bar = useTransform(scrollYProgress, [0, 1], ["4%", "100%"]);
@@ -268,7 +273,7 @@ export function Projects() {
       {reduce ? (
         <div className="mx-auto grid max-w-7xl gap-16 px-6 pb-28 md:grid-cols-2">
           {projects.map((p) => (
-            <Panel key={p.id} project={p} onOpen={() => setOpen(p)} />
+            <Panel key={p.id} project={p} onOpen={() => openProject(p)} />
           ))}
         </div>
       ) : (
@@ -277,7 +282,7 @@ export function Projects() {
           <div className="flex snap-x snap-mandatory gap-8 overflow-x-auto px-6 pb-20 md:hidden">
             {projects.map((p) => (
               <div key={p.id} className="snap-center">
-                <Panel project={p} onOpen={() => setOpen(p)} />
+                <Panel project={p} onOpen={() => openProject(p)} />
               </div>
             ))}
           </div>
@@ -287,7 +292,7 @@ export function Projects() {
             <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
               <motion.div style={{ x }} className="flex gap-16 pl-6 will-change-transform">
                 {projects.map((p) => (
-                  <Panel key={p.id} project={p} onOpen={() => setOpen(p)} />
+                  <Panel key={p.id} project={p} onOpen={() => openProject(p)} />
                 ))}
               </motion.div>
               <div className="mx-auto mt-14 h-px w-[60vw] bg-border">

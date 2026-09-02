@@ -1,6 +1,6 @@
 import { ClientOnly } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 import { Magnetic } from "./Magnetic";
 
@@ -8,18 +8,38 @@ const HeroScene = lazy(() => import("./HeroScene"));
 
 function SceneFallback() {
   return (
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,color-mix(in_oklab,var(--primary)_45%,transparent),transparent_62%)]" />
+    <div className="absolute inset-0 animate-[blob-drift_24s_ease-in-out_infinite] bg-[radial-gradient(circle_at_50%_45%,color-mix(in_oklab,var(--primary)_45%,transparent),transparent_62%)]" />
   );
 }
 
 export function Hero() {
   const reduce = useReducedMotion();
   const words = profile.headline.split(" ");
+  // Defer the WebGL bundle until the browser is idle (and skip it on tiny,
+  // low-power screens) so first paint stays fast.
+  const [sceneReady, setSceneReady] = useState(false);
+
+  useEffect(() => {
+    if (reduce) return;
+    const small = window.matchMedia("(max-width: 480px)").matches;
+    const lowCore = (navigator.hardwareConcurrency ?? 8) <= 4;
+    if (small && lowCore) return;
+    const w = window as typeof window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    };
+    const start = () => setSceneReady(true);
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(start, { timeout: 1500 })
+      : window.setTimeout(start, 600);
+    return () => {
+      window.clearTimeout(id);
+    };
+  }, [reduce]);
 
   return (
     <section id="top" className="noise-grain relative min-h-screen overflow-hidden">
-      <div className="absolute inset-0">
-        {reduce ? (
+      <div className="absolute inset-0" aria-hidden="true">
+        {reduce || !sceneReady ? (
           <SceneFallback />
         ) : (
           <ClientOnly fallback={<SceneFallback />}>

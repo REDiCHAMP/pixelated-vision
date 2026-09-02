@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import { profile } from "@/data/portfolio";
 import { Reveal } from "./Reveal";
+import { Magnetic } from "./Magnetic";
 
 export function Contact() {
   return (
@@ -27,6 +29,24 @@ export function Contact() {
             {profile.email}
           </a>
         </Reveal>
+
+        <Reveal delay={0.15}>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <Magnetic strength={0.35}>
+              <Link
+                to="/resume"
+                data-cursor-label="Resume"
+                className="glow-ring inline-block rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground transition-transform duration-300 hover:scale-[1.03]"
+              >
+                Download CV
+              </Link>
+            </Magnetic>
+            <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
+              Press ~ for the terminal
+            </span>
+          </div>
+        </Reveal>
+
 
         <Reveal delay={0.2}>
           <dl className="mt-16 grid gap-8 border-t border-border pt-10 text-sm sm:grid-cols-2 lg:grid-cols-4">
