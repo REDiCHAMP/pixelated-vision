@@ -40,30 +40,44 @@ export function Nav() {
         <a href="#top" className="font-display min-w-0 truncate text-sm tracking-[0.3em] uppercase">
           {profile.name}
         </a>
-        <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((l) => (
-            <a
-              key={l.id}
-              href={`#${l.id}`}
-              className={`relative text-sm transition-colors ${
-                active === l.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {l.label}
-              <span
-                className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-indigo-glow transition-transform duration-300 ${
-                  active === l.id ? "scale-x-100" : "scale-x-0"
+        <div className="flex items-center gap-4 md:gap-7">
+          <nav className="hidden items-center gap-7 md:flex">
+            {navLinks.map((l) => (
+              <a
+                key={l.id}
+                href={`#${l.id}`}
+                className={`relative text-sm transition-colors ${
+                  active === l.id
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
-              />
-            </a>
-          ))}
-        </nav>
-        <a
-          href="#contact"
-          className="rounded-full border border-primary/50 px-4 py-2 text-xs tracking-widest uppercase transition-colors hover:bg-primary/20 md:hidden"
-        >
-          Contact
-        </a>
+              >
+                {l.label}
+                <span
+                  className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-indigo-glow transition-transform duration-300 ${
+                    active === l.id ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
+              </a>
+            ))}
+          </nav>
+          <SoundToggle />
+          <Magnetic strength={0.3}>
+            <Link
+              to="/resume"
+              data-cursor-label="Resume"
+              className="hidden rounded-full border border-primary/50 px-4 py-2 text-xs tracking-widest uppercase transition-colors hover:bg-primary/20 sm:inline-block"
+            >
+              Download CV
+            </Link>
+          </Magnetic>
+          <a
+            href="#contact"
+            className="rounded-full border border-primary/50 px-4 py-2 text-xs tracking-widest uppercase transition-colors hover:bg-primary/20 sm:hidden"
+          >
+            Contact
+          </a>
+        </div>
       </div>
     </header>
   );
