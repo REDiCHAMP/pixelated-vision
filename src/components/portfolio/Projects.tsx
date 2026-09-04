@@ -91,14 +91,35 @@ function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
   );
 }
 
-function CaseStudy({ project, onClose }: { project: Project; onClose: () => void }) {
+function CaseStudy({
+  project,
+  onClose,
+  onNavigate,
+}: {
+  project: Project;
+  onClose: () => void;
+  onNavigate: (dir: -1 | 1) => void;
+}) {
   const panel = useRef<HTMLDivElement>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
+  const i = projects.findIndex((p) => p.id === project.id);
+  const prevNext = {
+    prev: projects[(i - 1 + projects.length) % projects.length]!,
+    next: projects[(i + 1) % projects.length]!,
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        onNavigate(-1);
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        onNavigate(1);
         return;
       }
       // Keep focus inside the dialog.
@@ -128,7 +149,11 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
       document.body.style.overflow = prev;
       opener?.focus?.();
     };
-  }, [onClose]);
+  }, [onClose, onNavigate]);
+
+  useEffect(() => {
+    panel.current?.scrollTo({ top: 0 });
+  }, [project.id]);
 
   return (
     <motion.div
@@ -163,6 +188,21 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
             Close
           </button>
         </div>
+
+        {project.metrics && project.metrics.length > 0 ? (
+          <dl className="mb-10 grid grid-cols-3 gap-4">
+            {project.metrics.map((m) => (
+              <div key={m.label} className="rounded-2xl border border-border bg-surface p-5">
+                <dt className="font-display text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+                  {m.label}
+                </dt>
+                <dd className="mt-2 text-2xl font-semibold text-indigo-glow md:text-3xl">
+                  {m.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
 
         <DevicePreview
           image={images[project.id] ?? ""}
@@ -202,7 +242,7 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
           </div>
         ) : null}
 
-        <div className="mt-12 grid gap-10 md:grid-cols-2">
+        <div className="mt-12 grid gap-10 md:grid-cols-3">
           <div>
             <h3 className="font-display text-xs tracking-[0.3em] text-muted-foreground uppercase">
               The problem
@@ -215,6 +255,14 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
             </h3>
             <p className="mt-3 leading-relaxed">{project.approach}</p>
           </div>
+          {project.outcome ? (
+            <div>
+              <h3 className="font-display text-xs tracking-[0.3em] text-muted-foreground uppercase">
+                The outcome
+              </h3>
+              <p className="mt-3 leading-relaxed">{project.outcome}</p>
+            </div>
+          ) : null}
         </div>
 
         <h3 className="font-display mt-14 text-xs tracking-[0.3em] text-muted-foreground uppercase">
@@ -241,6 +289,31 @@ function CaseStudy({ project, onClose }: { project: Project; onClose: () => void
             </li>
           ))}
         </ul>
+
+        <nav className="mt-16 flex items-center justify-between gap-4 border-t border-border pt-8">
+          <button
+            type="button"
+            onClick={() => onNavigate(-1)}
+            data-cursor-label="Previous"
+            className="group text-left transition-colors hover:text-indigo-glow"
+          >
+            <span className="font-display text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
+              ← Previous
+            </span>
+            <span className="mt-1 block text-lg font-medium">{prevNext.prev.title}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate(1)}
+            data-cursor-label="Next"
+            className="group text-right transition-colors hover:text-indigo-glow"
+          >
+            <span className="font-display text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
+              Next →
+            </span>
+            <span className="mt-1 block text-lg font-medium">{prevNext.next.title}</span>
+          </button>
+        </nav>
       </div>
     </motion.div>
   );
@@ -304,7 +377,18 @@ export function Projects() {
       )}
 
       <AnimatePresence>
-        {open ? <CaseStudy project={open} onClose={() => setOpen(null)} /> : null}
+        {open ? (
+          <CaseStudy
+            key={open.id}
+            project={open}
+            onClose={() => setOpen(null)}
+            onNavigate={(dir) => {
+              const idx = projects.findIndex((p) => p.id === open.id);
+              sfx.whoosh();
+              setOpen(projects[(idx + dir + projects.length) % projects.length]!);
+            }}
+          />
+        ) : null}
       </AnimatePresence>
     </section>
   );

@@ -17,6 +17,7 @@ function SceneFallback() {
 export function Hero() {
   const reduce = useReducedMotion();
   const words = profile.headline.split(" ");
+  const ready = useAppReady();
   // Defer the WebGL bundle until the browser is idle (and skip it on tiny,
   // low-power screens) so first paint stays fast.
   const [sceneReady, setSceneReady] = useState(false);
@@ -59,20 +60,40 @@ export function Hero() {
           {profile.location}
         </span>
 
-        <h1 className="mt-6 max-w-4xl text-5xl leading-[0.95] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
-          {words.map((word, i) => (
-            <span key={`${word}-${i}`} className="inline-block overflow-hidden pb-1">
-              <motion.span
-                className="inline-block pr-[0.25em]"
-                initial={reduce ? false : { y: "110%" }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.15 + i * 0.06, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        <h1
+          className="mt-6 max-w-4xl text-5xl leading-[0.95] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl"
+          style={{ perspective: "800px" }}
+        >
+          <span className="sr-only">{profile.headline}</span>
+          {(() => {
+            let n = -1;
+            return words.map((word, i) => (
+              <span
+                key={`${word}-${i}`}
+                aria-hidden
+                className="inline-block overflow-hidden pr-[0.25em] pb-1 align-bottom"
               >
-                {i >= words.length - 2 ? <span className="text-gradient">{word}</span> : word}
-              </motion.span>
-            </span>
-          ))}
+                {word.split("").map((char, c) => {
+                  n += 1;
+                  const delay = 0.1 + n * 0.028;
+                  return (
+                    <motion.span
+                      key={`${char}-${c}`}
+                      className={`inline-block ${i >= words.length - 2 ? "text-gradient" : ""}`}
+                      initial={reduce ? false : { y: "110%", rotateX: -70, opacity: 0 }}
+                      animate={ready || reduce ? { y: 0, rotateX: 0, opacity: 1 } : { y: "110%", rotateX: -70, opacity: 0 }}
+                      transition={{ delay, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ transformOrigin: "50% 100%" }}
+                    >
+                      {char}
+                    </motion.span>
+                  );
+                })}
+              </span>
+            ));
+          })()}
         </h1>
+
 
         <motion.p
           className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground"

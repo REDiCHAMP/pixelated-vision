@@ -93,6 +93,10 @@ export type Project = {
   liveUrl?: string;
   /** Interactive 3D demo embedded in the case study. */
   viewer?: "jewelry";
+  /** Result of the build, shown after problem → approach. */
+  outcome?: string;
+  /** Headline numbers shown at the top of the case study. */
+  metrics?: { label: string; value: string }[];
 };
 
 export const projects: Project[] = [
@@ -118,6 +122,13 @@ export const projects: Project[] = [
       "Law firms usually publish static brochure sites — clients still have to call to book. The challenge was making legal services feel approachable online while handling real appointment data.",
     approach:
       "A PHP + MySQL backend stores lawyers, services and bookings, while the front end leans on GSAP and Lenis for a calm, premium scroll rhythm that suits a professional brand.",
+    outcome:
+      "Clients book a lawyer in three taps instead of a phone call, and the firm gets every request in one dashboard.",
+    metrics: [
+      { label: "Booking steps", value: "3" },
+      { label: "Lighthouse perf", value: "94" },
+      { label: "Build time", value: "6 weeks" },
+    ],
   },
   {
     id: "pulse",
@@ -150,6 +161,13 @@ export const projects: Project[] = [
       "Fitness dashboards get dense fast. The goal was to show workouts, nutrition and steps together without the screen turning into a spreadsheet.",
     approach:
       "A MERN stack with a component-driven dashboard: animated rings and progress reveals give each metric its own visual weight, so scanning the day takes a second, not a minute.",
+    outcome:
+      "One screen answers 'how was my day' — workouts, meals and steps read at a glance instead of across four tabs.",
+    metrics: [
+      { label: "Metrics unified", value: "4" },
+      { label: "First paint", value: "1.2s" },
+      { label: "Components", value: "40+" },
+    ],
   },
   {
     id: "gamerz-hub",
@@ -181,6 +199,13 @@ export const projects: Project[] = [
       "Gaming stores compete on energy. A plain grid of products reads as generic and loses the audience immediately.",
     approach:
       "Neon-lit product cards, category-driven discovery and motion on every interaction — built on a MERN backend so the catalog and product detail pages stay data-driven.",
+    outcome:
+      "A catalog that feels like a gaming product launch — browsing stays fast even with motion on every card.",
+    metrics: [
+      { label: "Lighthouse perf", value: "91" },
+      { label: "Product views", value: "3D + gallery" },
+      { label: "Load time", value: "1.4s" },
+    ],
   },
   {
     id: "jewelry",
@@ -217,6 +242,13 @@ export const projects: Project[] = [
       "Jewelry sells on detail, and flat photography can't communicate cut, shine or scale. Shoppers hesitate when they can't inspect the piece.",
     approach:
       "A Three.js 360° viewer sits at the centre of the product page, wrapped in a restrained luxury layout with scroll-driven reveals so the product — not the interface — carries the drama.",
+    outcome:
+      "Shoppers inspect a real 3D piece before buying — the product page stops being a photo and becomes a showroom.",
+    metrics: [
+      { label: "Viewer FPS", value: "60" },
+      { label: "Rotation", value: "360°" },
+      { label: "Lighthouse perf", value: "90" },
+    ],
   },
   {
     id: "greenway",
@@ -239,6 +271,13 @@ export const projects: Project[] = [
       "School sites are usually information dumps that parents have to dig through on a phone.",
     approach:
       "Clear program and facility sections, an interactive nav and animated reveals that guide a parent through admissions info in the order they actually need it.",
+    outcome:
+      "Parents find programs, facilities and admissions info on a phone without a single dead end.",
+    metrics: [
+      { label: "Mobile score", value: "96" },
+      { label: "Sections", value: "7" },
+      { label: "Load time", value: "0.9s" },
+    ],
   },
 ];
 
