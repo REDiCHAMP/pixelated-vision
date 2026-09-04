@@ -17,6 +17,7 @@ function SceneFallback() {
 export function Hero() {
   const reduce = useReducedMotion();
   const words = profile.headline.split(" ");
+  const ready = useAppReady();
   // Defer the WebGL bundle until the browser is idle (and skip it on tiny,
   // low-power screens) so first paint stays fast.
   const [sceneReady, setSceneReady] = useState(false);
@@ -80,7 +81,7 @@ export function Hero() {
                       key={`${char}-${c}`}
                       className={`inline-block ${i >= words.length - 2 ? "text-gradient" : ""}`}
                       initial={reduce ? false : { y: "110%", rotateX: -70, opacity: 0 }}
-                      animate={ready || reduce ? { y: 0, rotateX: 0, opacity: 1 } : undefined}
+                      animate={ready || reduce ? { y: 0, rotateX: 0, opacity: 1 } : { y: "110%", rotateX: -70, opacity: 0 }}
                       transition={{ delay, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
                       style={{ transformOrigin: "50% 100%" }}
                     >
