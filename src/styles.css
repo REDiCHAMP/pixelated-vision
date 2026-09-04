@@ -284,3 +284,49 @@
     color: black !important;
   }
 }
+
+/* ---------------------------------------------------------------
+ * Theme variant: Warm Paper. Applied by adding .theme-paper to
+ * <html>; the midnight indigo palette above stays the default.
+ * --------------------------------------------------------------- */
+.theme-paper {
+  --background: oklch(0.96 0.015 85);
+  --foreground: oklch(0.22 0.03 275);
+  --surface: oklch(0.93 0.02 85);
+  --surface-elevated: oklch(0.89 0.025 85);
+  --card: oklch(0.94 0.018 85);
+  --card-foreground: oklch(0.22 0.03 275);
+  --popover: oklch(0.94 0.018 85);
+  --popover-foreground: oklch(0.22 0.03 275);
+  --primary: oklch(0.5 0.2 280);
+  --primary-foreground: oklch(0.98 0.005 270);
+  --indigo-glow: oklch(0.55 0.19 285);
+  --secondary: oklch(0.9 0.025 85);
+  --secondary-foreground: oklch(0.24 0.03 275);
+  --muted: oklch(0.9 0.02 85);
+  --muted-foreground: oklch(0.45 0.03 275);
+  --accent: oklch(0.86 0.045 75);
+  --accent-foreground: oklch(0.24 0.03 275);
+  --border: oklch(0.84 0.025 80);
+  --input: oklch(0.84 0.025 80);
+  --ring: oklch(0.5 0.2 280);
+}
+
+/* Morphing colour transition between theme variants. */
+html.theme-morph,
+html.theme-morph body,
+html.theme-morph *:not(canvas) {
+  transition:
+    background-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-morph,
+  html.theme-morph body,
+  html.theme-morph *:not(canvas) {
+    transition: none;
+  }
+}
