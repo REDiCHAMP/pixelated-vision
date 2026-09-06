@@ -32,5 +32,7 @@ export function setMotion(pref: MotionPref) {
 
 export function subscribeMotion(fn: (v: MotionPref) => void) {
   listeners.add(fn);
-  return () => listeners.delete(fn);
+  return () => {
+    listeners.delete(fn);
+  };
 }
