@@ -1,5 +1,6 @@
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { ClientOnly } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { Suspense, lazy, useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 import { useAppReady } from "@/hooks/use-app-ready";
@@ -15,7 +16,7 @@ function SceneFallback() {
 }
 
 export function Hero() {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const words = profile.headline.split(" ");
   const ready = useAppReady();
   // Defer the WebGL bundle until the browser is idle (and skip it on tiny,

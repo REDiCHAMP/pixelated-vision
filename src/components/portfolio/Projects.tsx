@@ -1,6 +1,7 @@
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { Suspense, lazy, useEffect, useRef, useState, type PointerEvent } from "react";
 import { ClientOnly } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import { projects, type Project } from "@/data/portfolio";
 import { SectionHeading } from "./Reveal";
 import { DevicePreview } from "./DevicePreview";
@@ -23,7 +24,7 @@ const images: Record<string, string> = {
 
 function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
   const ref = useRef<HTMLButtonElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   const onMove = (e: PointerEvent<HTMLButtonElement>) => {
     const el = ref.current;
@@ -322,7 +323,7 @@ function CaseStudy({
 export function Projects() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<Project | null>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   const openProject = (p: Project) => {
     sfx.whoosh();

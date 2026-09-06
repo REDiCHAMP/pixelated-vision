@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "motion/react";
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { sfx } from "@/lib/sound";
 
@@ -22,7 +23,7 @@ export function DevicePreview({
   liveUrl?: string;
 }) {
   const [device, setDevice] = useState<Device>("desktop");
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const current = devices.find((d) => d.id === device) ?? devices[0]!;
 
   return (

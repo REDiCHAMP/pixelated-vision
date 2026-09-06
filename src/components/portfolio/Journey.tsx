@@ -1,5 +1,6 @@
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { achievements, experienceNote, timeline } from "@/data/portfolio";
 import { Reveal, SectionHeading } from "./Reveal";
 
@@ -12,7 +13,7 @@ type Milestone = (typeof timeline)[number];
  */
 function Milestone({ item }: { item: Milestone }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 0.92", "end 0.28"],

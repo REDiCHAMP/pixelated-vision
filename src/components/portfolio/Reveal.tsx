@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "motion/react";
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
+import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { Scramble } from "./Scramble";
 
@@ -12,7 +13,7 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   if (reduce) return <div className={className}>{children}</div>;
 
