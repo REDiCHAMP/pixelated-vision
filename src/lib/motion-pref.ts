@@ -8,6 +8,7 @@ let current: MotionPref = "full";
 /** Reads the stored choice; when nothing is stored we default to full motion. */
 export function initMotion(): MotionPref {
   if (typeof window === "undefined") return "full";
+  inited = true;
   const saved = window.localStorage.getItem(KEY);
   current = saved === "reduced" ? "reduced" : "full";
   apply(current);
@@ -19,7 +20,13 @@ function apply(pref: MotionPref) {
   document.documentElement.classList.toggle("reduce-motion", pref === "reduced");
 }
 
+let inited = false;
+
 export function getMotion(): MotionPref {
+  if (!inited && typeof window !== "undefined") {
+    inited = true;
+    initMotion();
+  }
   return current;
 }
 
