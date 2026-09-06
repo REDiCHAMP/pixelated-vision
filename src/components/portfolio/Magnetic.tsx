@@ -1,3 +1,4 @@
+import { getMotion } from "@/lib/motion-pref";
 import { useEffect, useRef, type ReactNode } from "react";
 
 type Props = {
@@ -13,7 +14,7 @@ export function Magnetic({ children, strength = 0.35, className }: Props) {
     const el = ref.current;
     if (!el) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (getMotion() === "reduced") return;
 
     let raf = 0;
     let tx = 0;
