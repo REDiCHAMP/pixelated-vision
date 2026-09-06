@@ -205,11 +205,9 @@
   animation: marquee-scroll 38s linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .bg-blob,
-  .marquee-track {
-    animation: none;
-  }
+html.reduce-motion .bg-blob,
+html.reduce-motion .marquee-track {
+  animation: none;
 }
 
 @keyframes screen-pan {
@@ -254,12 +252,10 @@
   animation: matrix-fall linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .screen-pan,
-  .sound-bar,
-  .matrix-col {
-    animation: none;
-  }
+html.reduce-motion .screen-pan,
+html.reduce-motion .sound-bar,
+html.reduce-motion .matrix-col {
+  animation: none;
 }
 
 @media print {

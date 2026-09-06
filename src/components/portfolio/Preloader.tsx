@@ -1,9 +1,10 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 
 export function Preloader() {
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 

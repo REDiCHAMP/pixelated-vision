@@ -1,8 +1,9 @@
+import { getMotion } from "@/lib/motion-pref";
 import { useEffect } from "react";
 
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (getMotion() === "reduced") return;
 
     let raf = 0;
     let destroy: (() => void) | undefined;

@@ -1,3 +1,4 @@
+import { getMotion } from "@/lib/motion-pref";
 import { useEffect, useRef, useState } from "react";
 
 export function Cursor() {
@@ -9,7 +10,7 @@ export function Cursor() {
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = getMotion() === "reduced";
     if (!fine || reduce) return;
     setEnabled(true);
 

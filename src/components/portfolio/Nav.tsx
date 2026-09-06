@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { navLinks, profile } from "@/data/portfolio";
 import { SoundToggle } from "./SoundToggle";
 import { ThemeToggle } from "./ThemeToggle";
+import { MotionToggle } from "./MotionToggle";
 import { Magnetic } from "./Magnetic";
 
 export function Nav() {
@@ -70,6 +71,7 @@ export function Nav() {
             </Link>
           </nav>
           <SoundToggle />
+          <MotionToggle />
           <ThemeToggle />
           <Magnetic strength={0.3}>
             <Link

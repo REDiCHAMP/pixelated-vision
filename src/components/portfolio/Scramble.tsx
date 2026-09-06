@@ -1,12 +1,13 @@
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "motion/react";
+
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/*";
 
 export function Scramble({ text, className }: { text: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [out, setOut] = useState(text);
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
 
   useEffect(() => {
     const el = ref.current;

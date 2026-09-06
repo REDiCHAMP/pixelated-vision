@@ -1,6 +1,7 @@
+import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { Suspense, lazy, useState } from "react";
 import { ClientOnly } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { skillGroups } from "@/data/portfolio";
 import { Reveal, SectionHeading } from "./Reveal";
 
@@ -10,7 +11,7 @@ export function Skills() {
   const [active, setActive] = useState<string>(skillGroups[0]!.id);
   const [hovered, setHovered] = useState<string | null>(null);
   const [mode, setMode] = useState<"orbit" | "list">("orbit");
-  const reduce = useReducedMotion();
+  const reduce = useReduceMotion();
   const group = skillGroups.find((g) => g.id === active) ?? skillGroups[0]!;
   const showOrbit = mode === "orbit" && !reduce;
 
