@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuroraBackground } from "@/components/portfolio/AuroraBackground";
+import { Spotlight } from "@/components/portfolio/Spotlight";
+import { RouteTransition } from "@/components/portfolio/RouteTransition";
 
 function NotFoundComponent() {
   return (
@@ -151,6 +154,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuroraBackground />
+      <Spotlight />
+      <RouteTransition />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>

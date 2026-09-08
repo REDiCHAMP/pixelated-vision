@@ -6,6 +6,7 @@ import { projects, type Project } from "@/data/portfolio";
 import { SectionHeading } from "./Reveal";
 import { DevicePreview } from "./DevicePreview";
 import { sfx } from "@/lib/sound";
+import { useCountUp } from "@/hooks/use-count-up";
 import eliteImg from "@/assets/project-elitelegal.jpg";
 import pulseImg from "@/assets/project-pulse.jpg";
 import gamingImg from "@/assets/project-gaming.jpg";
@@ -21,6 +22,15 @@ const images: Record<string, string> = {
   jewelry: jewelryImg,
   greenway: greenwayImg,
 };
+
+function MetricValue({ value }: { value: string }) {
+  const { ref, display } = useCountUp(value);
+  return (
+    <span ref={ref} className="tabular-nums">
+      {display}
+    </span>
+  );
+}
 
 function Panel({ project, onOpen }: { project: Project; onOpen: () => void }) {
   const ref = useRef<HTMLButtonElement>(null);
@@ -198,7 +208,7 @@ function CaseStudy({
                   {m.label}
                 </dt>
                 <dd className="mt-2 text-2xl font-semibold text-indigo-glow md:text-3xl">
-                  {m.value}
+                  <MetricValue value={m.value} />
                 </dd>
               </div>
             ))}
