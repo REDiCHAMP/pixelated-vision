@@ -2,6 +2,7 @@ import { useReduceMotion } from "@/hooks/use-reduce-motion";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { Scramble } from "./Scramble";
+import { MaskReveal } from "./MaskReveal";
 
 
 export function Reveal({
@@ -45,7 +46,9 @@ export function SectionHeading({
         <Scramble text={index} />
       </span>
 
-      <h2 className="mt-4 text-4xl font-semibold text-balance md:text-5xl">{title}</h2>
+      <h2 className="mt-4 text-4xl font-semibold text-balance md:text-5xl">
+        <MaskReveal>{title}</MaskReveal>
+      </h2>
       {lead ? <p className="mt-4 text-base leading-relaxed text-muted-foreground">{lead}</p> : null}
     </Reveal>
   );

@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SmoothScroll } from "@/components/portfolio/SmoothScroll";
 import { Cursor } from "@/components/portfolio/Cursor";
 import { Preloader } from "@/components/portfolio/Preloader";
-import { Background } from "@/components/portfolio/Background";
 import { ScrollRail } from "@/components/portfolio/ScrollRail";
 import { Nav } from "@/components/portfolio/Nav";
 import { Hero } from "@/components/portfolio/Hero";
@@ -45,7 +44,6 @@ function Index() {
       <SmoothScroll />
       <Preloader />
       <Cursor />
-      <Background />
       <ScrollRail />
       <Nav />
       <main id="main">

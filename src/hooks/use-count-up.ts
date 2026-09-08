@@ -9,7 +9,7 @@ import { useReduceMotion } from "@/hooks/use-reduce-motion";
  */
 export function useCountUp(target: string, { duration = 1.1 }: { duration?: number } = {}) {
   const reduce = useReduceMotion();
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
 
   const match = target.match(/^([\d.]+)(.*)$/);
