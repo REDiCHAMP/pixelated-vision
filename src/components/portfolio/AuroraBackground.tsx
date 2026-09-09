@@ -189,9 +189,9 @@ function AuroraCanvas() {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     let raf = 0;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     const render = () => {
-      uniforms.uTime.value = clock.getElapsedTime();
+      uniforms.uTime.value = (performance.now() - startTime) / 1000;
       uniforms.uMouse.value.lerp(targetMouse, 0.06);
       uniforms.uScrollVel.value = THREE.MathUtils.lerp(uniforms.uScrollVel.value, vel, 0.08);
       vel *= 0.9;
