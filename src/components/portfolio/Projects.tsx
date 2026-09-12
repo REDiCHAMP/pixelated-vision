@@ -332,7 +332,9 @@ function CaseStudy({
 
 export function Projects() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<Project | null>(null);
+  const [travel, setTravel] = useState(0);
   const reduce = useReduceMotion();
 
   const openProject = (p: Project) => {
@@ -340,8 +342,27 @@ export function Projects() {
     setOpen(p);
   };
 
-  const { scrollYProgress } = useScroll({ target: trackRef });
-  const x = useTransform(scrollYProgress, [0, 1], ["2%", "-72%"]);
+  useEffect(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+    const measure = () => {
+      setTravel(Math.max(0, gallery.scrollWidth - window.innerWidth + 24));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(gallery);
+    window.addEventListener("resize", measure, { passive: true });
+    measure();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -travel]);
   const bar = useTransform(scrollYProgress, [0, 1], ["4%", "100%"]);
 
   return (
@@ -374,7 +395,11 @@ export function Projects() {
           {/* Desktop: pinned horizontal gallery */}
           <div ref={trackRef} className="relative hidden h-[420vh] md:block">
             <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
-              <motion.div style={{ x }} className="flex gap-16 pl-6 will-change-transform">
+              <motion.div
+                ref={galleryRef}
+                style={{ x }}
+                className="flex w-max gap-16 pl-6 will-change-transform"
+              >
                 {projects.map((p) => (
                   <Panel key={p.id} project={p} onOpen={() => openProject(p)} />
                 ))}

@@ -1,4 +1,5 @@
 import { getMotion } from "@/lib/motion-pref";
+import { cssVariableColor } from "@/lib/three-theme";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -64,53 +65,6 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
-const num = (v: string) => (v.endsWith("%") ? parseFloat(v) / 100 : parseFloat(v));
-
-/**
- * Resolve a CSS custom property to a THREE.Color. getComputedStyle() returns
- * oklch() for tokens authored in oklch, and THREE.Color cannot parse oklch, so
- * convert it here; rgb()/rgba()/#hex fall straight through to THREE.Color.
- */
-function cssColor(name: string): THREE.Color {
-  const el = document.createElement("div");
-  el.style.color = `var(${name})`;
-  el.style.display = "none";
-  document.body.appendChild(el);
-  const computed = getComputedStyle(el).color;
-  document.body.removeChild(el);
-
-  const m = computed.match(/oklch\(\s*([\d.%]+)\s+([\d.%]+)\s+([\d.%]+)\s*(?:\/\s*[\w.%]+)?\s*\)/i);
-  if (m) {
-    const L = num(m[1]!);
-    const C = num(m[2]!);
-    const H = num(m[3]!);
-    const hr = (H * Math.PI) / 180;
-    const a = C * Math.cos(hr);
-    const b = C * Math.sin(hr);
-    const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
-    const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
-    const s_ = L - 0.0894841775 * a - 1.291485548 * b;
-    const lc = l_ * l_ * l_;
-    const mc = m_ * m_ * m_;
-    const sc = s_ * s_ * s_;
-    const r = 4.0767416621 * lc - 3.3077115913 * mc + 0.2309699292 * sc;
-    const g = -1.2684380049 * lc + 2.6097574011 * mc - 0.3413193965 * sc;
-    const bl = -0.0041960863 * lc - 0.7034186147 * mc + 1.707614701 * sc;
-    const gamma = (c: number) => (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
-    return new THREE.Color(
-      Math.min(1, Math.max(0, gamma(r))),
-      Math.min(1, Math.max(0, gamma(g))),
-      Math.min(1, Math.max(0, gamma(bl))),
-    );
-  }
-
-  try {
-    return new THREE.Color(computed);
-  } catch {
-    return new THREE.Color("#0a0a1a");
-  }
-}
-
 function capable(): boolean {
   if (typeof window === "undefined") return false;
   if (getMotion() === "reduced") return false;
@@ -138,8 +92,8 @@ function AuroraCanvas() {
       uScroll: { value: 0 },
       uScrollVel: { value: 0 },
       uRes: { value: new THREE.Vector2(1, 1) },
-      uColorA: { value: cssColor("--background") },
-      uColorB: { value: cssColor("--primary") },
+      uColorA: { value: cssVariableColor("--background") },
+      uColorB: { value: cssVariableColor("--primary") },
     };
 
     const geometry = new THREE.BufferGeometry();
@@ -164,8 +118,10 @@ function AuroraCanvas() {
 
     // keep colors in sync with theme changes
     const mo = new MutationObserver(() => {
-      uniforms.uColorA.value.copy(cssColor("--background"));
-      uniforms.uColorB.value.copy(cssColor("--primary"));
+      window.requestAnimationFrame(() => {
+        uniforms.uColorA.value.copy(cssVariableColor("--background"));
+        uniforms.uColorB.value.copy(cssVariableColor("--primary"));
+      });
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
@@ -239,7 +195,7 @@ export function AuroraBackground() {
   }, [can]);
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <BackgroundFallback />
       {can && ready ? <AuroraCanvas /> : null}
     </div>
