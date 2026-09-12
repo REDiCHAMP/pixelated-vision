@@ -11,6 +11,7 @@ function apply(theme: Theme, morph: boolean) {
     window.setTimeout(() => root.classList.remove("theme-morph"), 700);
   }
   root.classList.toggle("theme-paper", theme === "paper");
+  window.dispatchEvent(new CustomEvent("portfolio:theme", { detail: theme }));
 }
 
 /** Switches between the Midnight Indigo and Warm Paper palettes. */
@@ -19,10 +20,9 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
 
   useEffect(() => {
     const saved = window.localStorage.getItem(KEY) as Theme | null;
-    if (saved === "paper") {
-      setTheme("paper");
-      apply("paper", false);
-    }
+    const active = saved === "paper" ? "paper" : "midnight";
+    setTheme(active);
+    apply(active, false);
   }, []);
 
   const toggle = () => {

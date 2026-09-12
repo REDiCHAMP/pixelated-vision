@@ -115,13 +115,24 @@
 
   html {
     scroll-behavior: smooth;
+    background-color: var(--color-background);
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: transparent;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  body > div {
+    isolation: isolate;
+  }
+
+  main,
+  header {
+    position: relative;
+    z-index: 1;
   }
 
   h1,

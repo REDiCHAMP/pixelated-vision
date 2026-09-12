@@ -2,6 +2,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { cssVariableColor } from "@/lib/three-theme";
 
 const vertexShader = /* glsl */ `
   uniform float uTime;
@@ -89,6 +90,53 @@ const fragmentShader = /* glsl */ `
   }
 `;
 
+function ThemeBinder() {
+  const { gl, scene } = useThree();
+
+  useEffect(() => {
+    gl.setClearColor(0x000000, 0);
+    const update = () => {
+      const background = cssVariableColor("--background");
+      const surface = cssVariableColor("--surface");
+      const primary = cssVariableColor("--primary");
+      const glow = cssVariableColor("--indigo-glow");
+      const foreground = cssVariableColor("--foreground");
+
+      scene.background = background;
+
+      scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          const material = object.material;
+          if (material instanceof THREE.ShaderMaterial) {
+            material.uniforms["uColorA"]?.value.copy(surface);
+            material.uniforms["uColorB"]?.value.copy(primary);
+            material.uniforms["uGlow"]?.value.copy(glow);
+          } else if (material instanceof THREE.MeshBasicMaterial && material.name === "theme-wire") {
+            material.color.copy(glow);
+          }
+        }
+        if (object instanceof THREE.Points && object.material instanceof THREE.PointsMaterial) {
+          object.material.color.copy(
+            object.material.name === "theme-particles" ? foreground : glow,
+          );
+        }
+        if (object instanceof THREE.DirectionalLight) object.color.copy(glow);
+        if (object instanceof THREE.PointLight) object.color.copy(primary);
+      });
+    };
+
+    update();
+    const observer = new MutationObserver(() => {
+      window.requestAnimationFrame(update);
+      window.setTimeout(update, 720);
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, [gl, scene]);
+
+  return null;
+}
+
 // Stage 1 (scroll 0 → 0.45): noisy crystal calms into a smooth globe.
 // Stage 2 (scroll 0.45 → 1): solid shell fades out, wireframe globe takes over,
 // then the shell dissolves into the dispersing particle field.
@@ -152,7 +200,14 @@ function Crystal({ scroll }: { scroll: React.RefObject<number> }) {
       </mesh>
       <mesh ref={wire} scale={1.05}>
         <icosahedronGeometry args={[1.5, 3]} />
-        <meshBasicMaterial ref={wireMat} color="#818cf8" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial
+          ref={wireMat}
+          name="theme-wire"
+          color="#818cf8"
+          wireframe
+          transparent
+          opacity={0.12}
+        />
       </mesh>
     </Float>
   );
@@ -188,6 +243,7 @@ function Particles({ count, scroll }: { count: number; scroll: React.RefObject<n
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
+        name="theme-particles"
         size={0.035}
         color="#a5b4fc"
         transparent
@@ -236,6 +292,7 @@ function Dispersal({ count, scroll }: { count: number; scroll: React.RefObject<n
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
+        name="theme-dispersal"
         ref={mat}
         size={0.03}
         color="#c7d2fe"
@@ -278,6 +335,7 @@ export default function HeroScene() {
       camera={{ position: [0, 0, 5.2], fov: 45 }}
       gl={{ antialias: !isSmall, alpha: true, powerPreference: "high-performance" }}
     >
+      <ThemeBinder />
       <ambientLight intensity={0.4} />
       <directionalLight position={[4, 5, 3]} intensity={2.2} color="#818cf8" />
       <pointLight position={[-4, -2, -3]} intensity={12} color="#4f46e5" distance={14} />
