@@ -105,9 +105,9 @@ function ThemeBinder() {
         if (object instanceof THREE.Mesh) {
           const material = object.material;
           if (material instanceof THREE.ShaderMaterial) {
-            material.uniforms.uColorA?.value.copy(surface);
-            material.uniforms.uColorB?.value.copy(primary);
-            material.uniforms.uGlow?.value.copy(glow);
+            material.uniforms["uColorA"]?.value.copy(surface);
+            material.uniforms["uColorB"]?.value.copy(primary);
+            material.uniforms["uGlow"]?.value.copy(glow);
           } else if (material instanceof THREE.MeshBasicMaterial && material.name === "theme-wire") {
             material.color.copy(glow);
           }
