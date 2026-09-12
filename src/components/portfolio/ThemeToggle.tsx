@@ -11,6 +11,7 @@ function apply(theme: Theme, morph: boolean) {
     window.setTimeout(() => root.classList.remove("theme-morph"), 700);
   }
   root.classList.toggle("theme-paper", theme === "paper");
+  window.dispatchEvent(new CustomEvent("portfolio:theme", { detail: theme }));
 }
 
 /** Switches between the Midnight Indigo and Warm Paper palettes. */

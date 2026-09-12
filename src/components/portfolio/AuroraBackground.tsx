@@ -118,10 +118,12 @@ function AuroraCanvas() {
 
     // keep colors in sync with theme changes
     const mo = new MutationObserver(() => {
-      window.requestAnimationFrame(() => {
+      const refresh = () => {
         uniforms.uColorA.value.copy(cssVariableColor("--background"));
         uniforms.uColorB.value.copy(cssVariableColor("--primary"));
-      });
+      };
+      window.requestAnimationFrame(refresh);
+      window.setTimeout(refresh, 720);
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 

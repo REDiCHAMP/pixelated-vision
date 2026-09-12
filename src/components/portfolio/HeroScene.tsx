@@ -96,10 +96,13 @@ function ThemeBinder() {
   useEffect(() => {
     gl.setClearColor(0x000000, 0);
     const update = () => {
+      const background = cssVariableColor("--background");
       const surface = cssVariableColor("--surface");
       const primary = cssVariableColor("--primary");
       const glow = cssVariableColor("--indigo-glow");
       const foreground = cssVariableColor("--foreground");
+
+      scene.background = background;
 
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh) {
@@ -123,7 +126,10 @@ function ThemeBinder() {
     };
 
     update();
-    const observer = new MutationObserver(() => window.requestAnimationFrame(update));
+    const observer = new MutationObserver(() => {
+      window.requestAnimationFrame(update);
+      window.setTimeout(update, 720);
+    });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => observer.disconnect();
   }, [gl, scene]);
