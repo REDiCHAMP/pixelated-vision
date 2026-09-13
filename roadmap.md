@@ -8,5 +8,5 @@
 - [x] 3. Case-study depth: metrics, problem/approach/outcome, next/prev nav
 - [x] 4. Scroll-driven journey storytelling (milestone snapping/focus)
 - [x] 5. `/lab` playground page with WebGL experiments
-- [ ] 7. Theme variants (warm paper vs midnight indigo) with morph transition
+- [x] 7. Theme variants (warm paper vs midnight indigo) with morph transition
 - [ ] 8. Performance polish (font preload, deferred R3F, poster frame)
